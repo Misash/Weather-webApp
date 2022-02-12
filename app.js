@@ -9,11 +9,18 @@ const app = express()
 app.use(bodyParser.urlencoded({extended: true}))
 
 
+app.get("/",(req,res)=>{
+    res.sendFile(__dirname + "/index.html")
+})
 
-app.get("/", (req, res) => {
 
 
-    const url = "https://api.openweathermap.org/data/2.5/weather?q=arequipa&appid=ce210146f8862dc94eb806926569b050&units=metric"
+
+app.post("/", (req, res) => {
+
+    const city = req.body.city
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=ce210146f8862dc94eb806926569b050&units=metric`
 
     https.get(url, (response) => {
         console.log('statusCode:', response.statusCode);
@@ -30,15 +37,11 @@ app.get("/", (req, res) => {
             console.log("description: ",description)
 
 
-            res.write("<h1>Temperature App </h1>")
-            res.write(`<img src=${weatherIcon}  >`)
-            res.write("<p>Temperature in Arequipa is "+ temp + " Celcius </p>")
+            res.write("<h1>Temperature in "+city+" is "+ temp + " Celcius </h1><hr>")
             res.write("<p>the weather is currently  "+ description + " </p>")
-
+            res.write(`<img src=${weatherIcon}  >`)
 
             res.send()
-
-
 
             console.log()
         });
